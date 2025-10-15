@@ -9,5 +9,6 @@ app.use(morgan("dev"));
 
 app.use("/users", proxy("http://localhost:3001"));
 app.use("/captains", proxy("http://localhost:3002"));
+app.use("/rides", proxy("http://localhost:3003"));
 
 export default app;

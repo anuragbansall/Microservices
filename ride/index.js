@@ -12,5 +12,5 @@ const PORT = process.env.PORT || 3001;
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log(`Captain service is running on port ${PORT}`);
+  console.log(`Ride service is running on port ${PORT}`);
 });
