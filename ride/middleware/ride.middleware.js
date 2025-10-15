@@ -10,13 +10,26 @@ export const userAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    console.log("Decoded Token:", decoded);
+
+    console.log(
+      "Fetching User Profile: ",
+      `${process.env.BASE_URL}/users/profile`
+    );
+
     const response = await axios.get(`${process.env.BASE_URL}/users/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const user = response.data;
+    console.log(
+      "User Profile Response: ",
+      `${process.env.BASE_URL}/users/profile`,
+      response.data
+    );
+
+    const { user } = response.data;
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -26,6 +39,7 @@ export const userAuth = async (req, res, next) => {
 
     next();
   } catch (error) {
+    // console.error(error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -2,6 +2,7 @@ import Ride from "../models/ride.model.js";
 
 export const createRide = async (req, res) => {
   const { user } = req;
+  console.log("user in createRide:", user);
   const { pickup, destination } = req.body;
 
   if (!pickup || !destination) {
