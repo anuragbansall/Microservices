@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import BlacklistToken from "../models/blacklistToken.model.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -77,6 +78,35 @@ export const loginUser = async (req, res) => {
     });
 
     res.status(200).json({ user, token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const logoutUser = (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  // Add token to blacklist
+  const blacklistedToken = new BlacklistToken({ token });
+  blacklistedToken.save();
+
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
