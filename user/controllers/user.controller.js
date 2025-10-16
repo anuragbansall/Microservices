@@ -101,11 +101,9 @@ export const logoutUser = (req, res) => {
 };
 
 export const getUserProfile = async (req, res) => {
-  console.log("Req User:", req.user);
   try {
     const user = await User.findById(req.user.id).select("-password");
 
-    console.log("User Profile:", user);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

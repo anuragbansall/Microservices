@@ -3,7 +3,6 @@ import { subscribe, publish } from "../service/rabbitmq.service.js";
 
 export const createRide = async (req, res) => {
   const { user } = req;
-  console.log("user in createRide:", user);
   const { pickup, destination } = req.body;
 
   if (!pickup || !destination) {
@@ -31,12 +30,9 @@ export const acceptRide = async (req, res) => {
 
   try {
     const ride = await Ride.findById(rideId);
-    console.log("Ride fetched for acceptance:", ride);
     if (!ride) {
       return res.status(404).json({ message: "Ride not found" });
     }
-
-    console.log("Ride found:", ride);
 
     ride.status = "accepted";
     await ride.save();

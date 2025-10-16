@@ -48,8 +48,6 @@ export const loginCaptain = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password);
-
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
@@ -58,8 +56,6 @@ export const loginCaptain = async (req, res) => {
     if (!captain) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
-
-    console.log("Captain found:", captain);
 
     const isPasswordValid = await bcrypt.compare(password, captain.password);
     if (!isPasswordValid) {
@@ -109,8 +105,6 @@ export const logoutCaptain = (req, res) => {
 export const getCaptainProfile = async (req, res) => {
   try {
     const captain = await Captain.findById(req.captain.id).select("-password");
-    console.log("Req Captain:", req.captain.id);
-    console.log("Fetched Captain:", captain);
     if (!captain) {
       return res.status(404).json({ error: "Captain not found" });
     }

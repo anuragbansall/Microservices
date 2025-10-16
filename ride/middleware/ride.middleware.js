@@ -10,24 +10,11 @@ export const userAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("Decoded Token:", decoded);
-
-    console.log(
-      "Fetching User Profile: ",
-      `${process.env.BASE_URL}/users/profile`
-    );
-
     const response = await axios.get(`${process.env.BASE_URL}/users/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    console.log(
-      "User Profile Response: ",
-      `${process.env.BASE_URL}/users/profile`,
-      response.data
-    );
 
     const { user } = response.data;
 
@@ -64,8 +51,6 @@ export const captainAuth = async (req, res, next) => {
     );
 
     const captain = response.data;
-
-    console.log("Captain Profile Response:", captain);
 
     if (!captain) {
       return res.status(401).json({ message: "Unauthorized" });
