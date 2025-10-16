@@ -13,7 +13,6 @@ const captainSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false,
   },
   isAvailable: {
     type: Boolean,

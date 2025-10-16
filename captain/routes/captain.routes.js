@@ -5,6 +5,7 @@ import {
   logoutCaptain,
   getCaptainProfile,
   updateCaptainAvailability,
+  waitForRideRequests,
 } from "../controllers/captain.controller.js";
 import {
   verifyToken,
@@ -27,6 +28,12 @@ captainRouter.patch(
   verifyToken,
   isTokenBlacklisted,
   updateCaptainAvailability
+);
+captainRouter.get(
+  "/wait-for-rides",
+  verifyToken,
+  isTokenBlacklisted,
+  waitForRideRequests
 );
 
 export default captainRouter;

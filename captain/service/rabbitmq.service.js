@@ -1,4 +1,7 @@
 import ampq from "amqplib";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
 

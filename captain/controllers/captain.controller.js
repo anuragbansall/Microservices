@@ -2,6 +2,9 @@ import Captain from "../models/captain.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import BlacklistToken from "../models/blacklistToken.model.js";
+import { subscribe, publish } from "../service/rabbitmq.service.js";
+
+const pendingRequests = [];
 
 export const registerCaptain = async (req, res) => {
   try {
@@ -45,6 +48,8 @@ export const loginCaptain = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log(email, password);
+
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
@@ -53,6 +58,8 @@ export const loginCaptain = async (req, res) => {
     if (!captain) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
+
+    console.log("Captain found:", captain);
 
     const isPasswordValid = await bcrypt.compare(password, captain.password);
     if (!isPasswordValid) {
@@ -133,3 +140,25 @@ export const updateCaptainAvailability = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const waitForRideRequests = (req, res) => {
+  // Wait for 30 seconds for a ride request else timeout
+  req.setTimeout(30000, () => {
+    return res.status(204).end();
+  });
+
+  pendingRequests.push(res);
+};
+
+// Subscribe to ride requests
+subscribe("new_ride", async (message) => {
+  const ride = JSON.parse(message);
+  console.log("New ride request received:", ride);
+
+  // Notify all pending captains
+  pendingRequests.forEach((res) => {
+    res.status(200).json({ ride });
+  });
+
+  pendingRequests.length = 0; // Clear the array
+});

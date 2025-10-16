@@ -1,4 +1,5 @@
 import Ride from "../models/ride.model.js";
+import { subscribe, publish } from "../service/rabbitmq.service.js";
 
 export const createRide = async (req, res) => {
   const { user } = req;
@@ -14,6 +15,8 @@ export const createRide = async (req, res) => {
   try {
     const newRide = new Ride({ user: user._id, pickup, destination });
     await newRide.save();
+
+    await publish("new_ride", JSON.stringify(newRide));
 
     res.status(201).json(newRide);
   } catch (error) {
