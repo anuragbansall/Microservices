@@ -47,6 +47,7 @@ export const userAuth = async (req, res, next) => {
 export const captainAuth = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -63,6 +64,8 @@ export const captainAuth = async (req, res, next) => {
     );
 
     const captain = response.data;
+
+    console.log("Captain Profile Response:", captain);
 
     if (!captain) {
       return res.status(401).json({ message: "Unauthorized" });

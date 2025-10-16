@@ -109,6 +109,8 @@ export const logoutCaptain = (req, res) => {
 export const getCaptainProfile = async (req, res) => {
   try {
     const captain = await Captain.findById(req.captain.id).select("-password");
+    console.log("Req Captain:", req.captain.id);
+    console.log("Fetched Captain:", captain);
     if (!captain) {
       return res.status(404).json({ error: "Captain not found" });
     }

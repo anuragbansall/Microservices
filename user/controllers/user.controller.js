@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import BlacklistToken from "../models/blacklistToken.model.js";
+import { subscribe } from "../service/rabbitmq.service.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -115,3 +116,8 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+subscribe("ride_accepted", async (msg) => {
+  const ride = JSON.parse(msg);
+  console.log("Ride accepted:", ride);
+});

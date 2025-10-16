@@ -26,5 +26,26 @@ export const createRide = async (req, res) => {
 };
 
 export const acceptRide = async (req, res) => {
-  // TODO: Implement this
+  const { captain } = req;
+  const { rideId } = req.params;
+
+  try {
+    const ride = await Ride.findById(rideId);
+    console.log("Ride fetched for acceptance:", ride);
+    if (!ride) {
+      return res.status(404).json({ message: "Ride not found" });
+    }
+
+    console.log("Ride found:", ride);
+
+    ride.status = "accepted";
+    await ride.save();
+
+    publish("ride_accepted", JSON.stringify(ride));
+
+    res.status(200).json(ride);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
 };
